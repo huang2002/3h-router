@@ -1,6 +1,6 @@
 {
   "name": "3h-router",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "A simple router.",
   "main": "3h-router.js",
   "scripts": {

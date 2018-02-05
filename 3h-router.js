@@ -10,7 +10,7 @@ const http = require('http'),
 
 /**
  * @description The constructor of routers.
- * @event before Before routing events. (The listener will receive an object: { request: IncomingMessage, stopRouting: (code: number) => void }. Call stopRouting to stop the routing with that code.)
+ * @event before Before routing events. (The listener will receive an object: { request: IncomingMessage, response: SeverResponse, stopRouting: (code: number) => void }. Call stopRouting to stop the routing with that code.)
  * @event error Error events. (The listeners will receive the error and maybe do something with it, and if there is no listeners to deal with the error, it will be just logged to console. By the way, the response will be finished with status code 500.)
  */
 class Router extends EventEmitter {
@@ -33,6 +33,7 @@ class Router extends EventEmitter {
             let code, flag = true;
             this.emit('before', {
                 request: req,
+                respose: res,
                 stopRouting: code => {
                     flag = true;
                     code = code || 403;
@@ -51,7 +52,7 @@ class Router extends EventEmitter {
                         dir += path.sep;
                     }
                 }
-                if (!ext || !privateFiles.includes(basename)) {
+                if (!ext || !privateFiles.includes(base)) {
                     fs.exists(url, exists => {
                         if (exists) {
                             if (ext) {
@@ -232,6 +233,7 @@ const types = Router.types = {
  * @type {[code: string]: string} code->message
  */
 const codeMessages = Router.codeMessages = {
+    200: '',
     404: '<h1>404 - Not Found!</h1>',
     403: '<h1>403 - Forbidden!</h1>',
     500: '<h1>500 - Internal Error!</h1>'
