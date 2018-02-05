@@ -37,7 +37,7 @@ class Router extends EventEmitter {
                 response: res,
                 stopRouting: code => {
                     flag = true;
-                    code = code || 403;
+                    code = code;
                 }
             });
             if (flag) {
