@@ -1,0 +1,16 @@
+{
+  "name": "3h-router",
+  "version": "1.0.1",
+  "description": "A simple router.",
+  "main": "3h-router.js",
+  "scripts": {
+    "test": "echo # Please run test.js and visit http://localhost:88/ to test it. # && exit 0"
+  },
+  "keywords": [
+    "route",
+    "router",
+    "3h"
+  ],
+  "author": "3h",
+  "license": "ISC"
+}
