@@ -17,9 +17,9 @@ const Router = require('3h-router'),
     router = new Router(__dirname);
 router.start(88).on('before', ({ request, stopRouting }) => {
     console.log(`(Before Routing) URL: "${request.url}".`);
-    // if (/* need to stop routing */) {
-    //     stopRouting(/* status code */);
-    // }
+    if (needToStopRouting) {
+        stopRouting(statusCode); // Or, don't pass the code to it to prevent the router from ending the response.
+    }
 }).on('error', err => {
     console.error(err);
 });

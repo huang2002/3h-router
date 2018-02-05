@@ -10,7 +10,7 @@ const http = require('http'),
 
 /**
  * @description The constructor of routers.
- * @event before Before routing events. (The listener will receive an object: { request: IncomingMessage, response: SeverResponse, stopRouting: (code: number) => void }. Call stopRouting to stop the routing with that code.)
+ * @event before Before routing events. (The listener will receive an object: { request: IncomingMessage, response: SeverResponse, stopRouting: (code: number) => void }. Call stopRouting to stop the routing with that code, and the response will not be ended if the code is not a number.)
  * @event error Error events. (The listeners will receive the error and maybe do something with it, and if there is no listeners to deal with the error, it will be just logged to console. By the way, the response will be finished with status code 500.)
  */
 class Router extends EventEmitter {
@@ -30,10 +30,11 @@ class Router extends EventEmitter {
      */
     start(port) {
         this.sever = http.createServer((req, res) => {
-            let code, flag = true;
+            let code = null,
+                flag = true;
             this.emit('before', {
                 request: req,
-                respose: res,
+                response: res,
                 stopRouting: code => {
                     flag = true;
                     code = code || 403;
@@ -80,7 +81,9 @@ class Router extends EventEmitter {
                     endWithCode(403, res);
                 }
             } else {
-                endWithCode(code, res);
+                if (typeof code === 'number') {
+                    endWithCode(code, res);
+                }
             }
         }).on('error', err => {
             if (!this.emit('error', err)) {

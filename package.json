@@ -1,6 +1,6 @@
 {
   "name": "3h-router",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A simple router.",
   "main": "3h-router.js",
   "scripts": {
@@ -12,5 +12,5 @@
     "3h"
   ],
   "author": "3h",
-  "license": "ISC"
+  "license": "MIT"
 }
