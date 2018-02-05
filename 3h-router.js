@@ -36,7 +36,7 @@ class Router extends EventEmitter {
                 request: req,
                 response: res,
                 stopRouting: code => {
-                    flag = true;
+                    flag = false;
                     code = code;
                 }
             });
