@@ -8,6 +8,12 @@
 $ npm install 3h-router
 ```
 
+## Features
+
+- Gzip is enabled.
+- Private files/directories can be forbidden.
+- Main router & sub-routers.
+
 ## Example
 
 ### main router

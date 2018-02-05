@@ -285,7 +285,10 @@ Router.gzipEnabled = true;
  * @type {string[]} An array of strings.
  */
 const privateFiles = Router.privateFiles = [
-    Router.subRouter
+    Router.subRouter,
+    'package.json',
+    'package-lock.json',
+    'package.json'
 ];
 
 /**
