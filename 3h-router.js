@@ -6,6 +6,7 @@
 const http = require('http'),
     EventEmitter = require('events'),
     fs = require('fs'),
+    zlib = require('zlib'),
     path = require('path');
 
 /**
@@ -53,18 +54,18 @@ class Router extends EventEmitter {
                         dir += path.sep;
                     }
                 }
-                if (!ext || !privateFiles.includes(base)) {
+                if (!ext && !privateFiles.includes(base)) {
                     fs.exists(url, exists => {
                         if (exists) {
                             if (ext) {
-                                endWithFile(url, res).catch(err => {
+                                endWithFile(url, req, res).catch(err => {
                                     if (!this.emit('error', err)) {
                                         console.error(err);
                                     }
                                 });
                             } else {
                                 if (privateDirectories.some(d => dir.includes(d))) {
-                                    endWithCode(403, res);
+                                    endWithCode(403, req, res);
                                 } else {
                                     routeDirectory(dir, req, res).catch(err => {
                                         if (!this.emit('error', err)) {
@@ -74,15 +75,15 @@ class Router extends EventEmitter {
                                 }
                             }
                         } else {
-                            endWithCode(404, res);
+                            endWithCode(404, req, res);
                         }
                     });
                 } else {
-                    endWithCode(403, res);
+                    endWithCode(403, req, res);
                 }
             } else {
                 if (typeof code === 'number') {
-                    endWithCode(code, res);
+                    endWithCode(code, req, res);
                 }
             }
         }).on('error', err => {
@@ -117,11 +118,11 @@ const routeDirectory = Router.routeDirectory = (dir, req, res) => {
                     cb(req, res);
                     resolve();
                 } catch (err) {
-                    endWithCode(500, res);
+                    endWithCode(500, req, res);
                     reject(err);
                 }
             } else {
-                routeDefaultPages(dir, res).then(resolve, reject);
+                routeDefaultPages(dir, req, res).then(resolve, reject);
             }
         });
     });
@@ -133,7 +134,7 @@ const routeDirectory = Router.routeDirectory = (dir, req, res) => {
  * @param {SeverResponse} res The response object.
  * @returns {Promise} A promise resolve on success and reject on error.
  */
-const routeDefaultPages = Router.routeDefaultPages = (dir, res) => {
+const routeDefaultPages = Router.routeDefaultPages = (dir, req, res) => {
     return new Promise((resolve, reject) => {
         let curIndex = 0;
         const len = defaultPages.length,
@@ -142,14 +143,14 @@ const routeDefaultPages = Router.routeDefaultPages = (dir, res) => {
                     const curUrl = dir + defaultPages[curIndex];
                     fs.exists(curUrl, exists => {
                         if (exists) {
-                            endWithFile(curUrl, res).then(resolve, reject);
+                            endWithFile(curUrl, req, res).then(resolve, reject);
                         } else {
                             curIndex++;
                             next();
                         }
                     });
                 } else {
-                    endWithCode(404, res);
+                    endWithCode(404, req, res);
                 }
             };
         next();
@@ -162,19 +163,32 @@ const routeDefaultPages = Router.routeDefaultPages = (dir, res) => {
  * @param {SeverResponse} res The response object.
  * @returns {Promise} A promise resolve on success and reject on error.
  */
-const endWithFile = Router.endWithFile = (url, res) => {
+const endWithFile = Router.endWithFile = (url, req, res) => {
     return new Promise((resolve, reject) => {
         fs.readFile(url, (err, data) => {
             if (err) {
-                endWithCode(500, res);
+                endWithCode(500, req, res);
                 reject(err);
             } else {
                 const ext = path.extname(url).slice(1);
                 if (ext in types) {
                     res.setHeader('Content-Type', types[ext]);
                 }
-                res.end(data);
-                resolve();
+                if (Router.gzipEnabled && req.headers['accept-encoding'].includes('gzip')) {
+                    zlib.gzip(data, (e, d) => {
+                        if (e) {
+                            endWithCode(500, req, res);
+                            reject(e);
+                        } else {
+                            res.setHeader('Content-Encoding', 'gzip');
+                            res.end(d);
+                            resolve();
+                        }
+                    });
+                } else {
+                    res.end(data);
+                    resolve();
+                }
             }
         });
     });
@@ -185,7 +199,7 @@ const endWithFile = Router.endWithFile = (url, res) => {
  * @param {number} code The status code.
  * @param {SeverResponse} res The response object.
  */
-const endWithCode = Router.endWithCode = (code, res) => {
+const endWithCode = Router.endWithCode = (code, req, res) => {
     res.writeHead(code, {
         'Content-Type': 'text/html'
     });
@@ -259,6 +273,12 @@ const defaultPages = Router.defaultPages = [
  * @type {string} The file name of the sub-router.
  */
 Router.subRouter = 'sub-router.js';
+
+/**
+ * @description Whether to enable gzip.
+ * @type {boolean}
+ */
+Router.gzipEnabled = true;
 
 /**
  * @description The private file that shouldn't be visited.

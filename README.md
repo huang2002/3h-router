@@ -15,6 +15,7 @@ $ npm install 3h-router
 ```javascript
 const Router = require('3h-router'),
     router = new Router(__dirname);
+Router.defaultPages.unshift('my-index.html');
 router.start(88).on('before', ({ request, stopRouting }) => {
     console.log(`(Before Routing) URL: "${request.url}".`);
     if (needToStopRouting) {
@@ -34,7 +35,7 @@ module.exports = (req, res) => {
     // Finish routing.
     Router.endWithFile(
         __dirname + '/some-file.html',
-        res
+        req, res
     ).catch(console.error);
     // Or:
     // res.writeHead(200, {
@@ -90,11 +91,12 @@ try {
     - Router.codeMesssages - *An object that tells how to match messages with different status codes.*
     - Router.privateFiles - *An array that contains the private files.*
     - Router.privateDirectories - *An array that contains the private directories.*
+    - Router.gzipEnabled - *Whether to enable gzip.*
     - Router.subRouter - *A string that tells the name of sub-router files.*
     - Router.routeDirectory(dir, req, res) - *Call this to route in the given directory.*
-    - Router.routeDefaultPages(dir, res) - *Call this to route the default pages in the given directory.*
-    - Router.endWithFile(url, res) - *Call this to end the response with the content of the given file.*
-    - Router.endWithCode(code, res) - *Call this to end the response with that code.*
+    - Router.routeDefaultPages(dir, req, res) - *Call this to route the default pages in the given directory.*
+    - Router.endWithFile(url, req, res) - *Call this to end the response with the content of the given file.*
+    - Router.endWithCode(code, req, res) - *Call this to end the response with that code.*
 - router - *( An instance of Router. )*
     - Event: "before" - *Before routing.*
     - Event: "error" - *When error appears.*
