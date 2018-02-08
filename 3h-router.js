@@ -54,7 +54,9 @@ class Router extends EventEmitter {
                         dir += path.sep;
                     }
                 }
-                if (!ext && !privateFiles.includes(base)) {
+                if (ext && privateFiles.includes(base)) {
+                    endWithCode(403, req, res);
+                } else {
                     fs.exists(url, exists => {
                         if (exists) {
                             if (ext) {
@@ -78,8 +80,6 @@ class Router extends EventEmitter {
                             endWithCode(404, req, res);
                         }
                     });
-                } else {
-                    endWithCode(403, req, res);
                 }
             } else {
                 if (typeof code === 'number') {
@@ -131,6 +131,7 @@ const routeDirectory = Router.routeDirectory = (dir, req, res) => {
 /**
  * @description To route the default pages in the directory.
  * @param {string} dir The directory.
+ * @param {IncomingMessage} req The request object.
  * @param {SeverResponse} res The response object.
  * @returns {Promise} A promise resolve on success and reject on error.
  */
@@ -160,6 +161,7 @@ const routeDefaultPages = Router.routeDefaultPages = (dir, req, res) => {
 /**
  * @description To end the response with a file.
  * @param {string} url The url of the file.
+ * @param {IncomingMessage} req The request object.
  * @param {SeverResponse} res The response object.
  * @returns {Promise} A promise resolve on success and reject on error.
  */
@@ -197,6 +199,7 @@ const endWithFile = Router.endWithFile = (url, req, res) => {
 /**
  * @description To end the response with that code.
  * @param {number} code The status code.
+ * @param {IncomingMessage} req The request object.
  * @param {SeverResponse} res The response object.
  */
 const endWithCode = Router.endWithCode = (code, req, res) => {
@@ -208,6 +211,19 @@ const endWithCode = Router.endWithCode = (code, req, res) => {
             codeMessages[code] :
             `<h1>Something bad happended!</h1><p>Status Code: ${code}</p>`
     );
+};
+
+/**
+ * @description To redirect to that url.
+ * @param {string} url The target url.
+ * @param {IncomingMessage} req The request object.
+ * @param {SeverResponse} res The response object.
+ */
+const redirect = Router.redirect = (url, req, res) => {
+    res.writeHead(302, {
+        'Location': url
+    });
+    res.end();
 };
 
 /**

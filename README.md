@@ -103,6 +103,7 @@ try {
     - Router.routeDefaultPages(dir, req, res) - *Call this to route the default pages in the given directory.*
     - Router.endWithFile(url, req, res) - *Call this to end the response with the content of the given file.*
     - Router.endWithCode(code, req, res) - *Call this to end the response with that code.*
+    - Router.redirect(url, req, res) - *Call this to redirect to that url.*
 - router - *( An instance of Router. )*
     - Event: "before" - *Before routing.*
     - Event: "error" - *When error appears.*
