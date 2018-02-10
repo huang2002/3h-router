@@ -197,6 +197,40 @@ const endWithFile = Router.endWithFile = (url, req, res) => {
 };
 
 /**
+ * @description To end the response with a json string.
+ * @param {Object} obj The object to stringify.
+ * @param {IncomingMessage} req The request object.
+ * @param {SeverResponse} res The response object.
+ * @returns {Promise} A promise resolve on success and reject on error.
+ */
+const endWithJson = Router.endWithJson = (obj, req, res) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const str = JSON.stringify(obj);
+            res.setHeader('Content-Type', types.json);
+            if (Router.gzipEnabled && req.headers['accept-encoding'].includes('gzip')) {
+                zlib.gzip(str, (e, d) => {
+                    if (e) {
+                        endWithCode(500, req, res);
+                        reject(e);
+                    } else {
+                        res.setHeader('Content-Encoding', 'gzip');
+                        res.end(d);
+                        resolve();
+                    }
+                });
+            } else {
+                res.end(str);
+                resolve();
+            }
+        } catch (err) {
+            endWithCode(500, req, res);
+            reject(err);
+        }
+    });
+};
+
+/**
  * @description To end the response with that code.
  * @param {number} code The status code.
  * @param {IncomingMessage} req The request object.

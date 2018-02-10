@@ -102,6 +102,7 @@ try {
     - Router.routeDirectory(dir, req, res) - *Call this to route in the given directory.*
     - Router.routeDefaultPages(dir, req, res) - *Call this to route the default pages in the given directory.*
     - Router.endWithFile(url, req, res) - *Call this to end the response with the content of the given file.*
+    - Router.endWithJson(obj, req, res) - *Call this to end the response with a json string.*
     - Router.endWithCode(code, req, res) - *Call this to end the response with that code.*
     - Router.redirect(url, req, res) - *Call this to redirect to that url.*
 - router - *( Any instance of Router. )*
