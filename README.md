@@ -95,8 +95,8 @@ try {
     - Router.types - *An object that tells how to match content-types with the extensions of files.*
     - Router.defaultPages - *An array that contains the default pages.*
     - Router.codeMesssages - *An object that tells how to match messages with different status codes.*
-    - Router.privateFiles - *An array that contains the private files.*
-    - Router.privateDirectories - *An array that contains the private directories.*
+    - Router.privateFiles - *An array of RegExp that contains the private files.*
+    - Router.privateDirectories - *An array of RegExp that contains the private directories.*
     - Router.gzipEnabled - *Whether to enable gzip.*
     - Router.subRouter - *A string that tells the name of sub-router files.*
     - Router.routeDirectory(dir, req, res) - *Call this to route in the given directory.*

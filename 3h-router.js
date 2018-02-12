@@ -54,7 +54,7 @@ class Router extends EventEmitter {
                         dir += path.sep;
                     }
                 }
-                if (ext && privateFiles.includes(base)) {
+                if (ext && privateFiles.some(f => f.test(base))) {
                     endWithCode(403, req, res);
                 } else {
                     fs.exists(url, exists => {
@@ -66,7 +66,7 @@ class Router extends EventEmitter {
                                     }
                                 });
                             } else {
-                                if (privateDirectories.some(d => dir.includes(d))) {
+                                if (privateDirectories.some(d => d.test(dir))) {
                                     endWithCode(403, req, res);
                                 } else {
                                     routeDirectory(dir, req, res).catch(err => {
@@ -332,22 +332,21 @@ Router.gzipEnabled = true;
 
 /**
  * @description The private file that shouldn't be visited.
- * @type {string[]} An array of strings.
+ * @type {RegExp[]} An array of strings.
  */
 const privateFiles = Router.privateFiles = [
-    Router.subRouter,
-    'package.json',
-    'package-lock.json',
-    'package.json'
+    /package(?:-lock)?\.json/i,
+    /private/i,
+    /route/i
 ];
 
 /**
  * @description The private directories that shouldn't be visited.
- * @type {string[]} An array of strings.
+ * @type {RegExp[]} An array of strings.
  */
 const privateDirectories = Router.privateDirectories = [
-    'private',
-    'node_modules'
+    /private/i,
+    /node_modules/i
 ];
 
 module.exports = Router;
