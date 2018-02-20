@@ -33,6 +33,7 @@ class Router extends EventEmitter {
         this.sever = http.createServer((req, res) => {
             let code = null,
                 flag = true;
+            res = extend(req, res);
             this.emit('before', {
                 request: req,
                 response: res,
@@ -100,6 +101,22 @@ class Router extends EventEmitter {
         this.sever.close();
     }
 }
+
+/**
+ * @description To extend the res.
+ * @param {IncomingMessage} req The request object.
+ * @param {SeverResponse} res The response object.
+ * @returns {SeverResponse} The response object.
+ */
+const extend = Router.extend = (req, res) => {
+    res.routeDirectory = dir => routeDirectory(dir, req, res);
+    res.routeDefaultPages = dir => routeDefaultPages(dir, req, res);
+    res.endWithFile = url => endWithFile(url, req, res);
+    res.endWithJson = obj => endWithJson(obj, req, res);
+    res.endWithCode = code => endWithCode(code, req, res);
+    res.redirect = url => redirect(url, req, res);
+    return res;
+};
 
 /**
  * @description To route the directory.
