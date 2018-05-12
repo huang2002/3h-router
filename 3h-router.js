@@ -352,7 +352,6 @@ Router.gzipEnabled = true;
  * @type {RegExp[]} An array of strings.
  */
 const privateFiles = Router.privateFiles = [
-    /package(?:-lock)?\.json/i,
     /private/i,
     /route/i
 ];
@@ -362,8 +361,7 @@ const privateFiles = Router.privateFiles = [
  * @type {RegExp[]} An array of strings.
  */
 const privateDirectories = Router.privateDirectories = [
-    /private/i,
-    /node_modules/i
+    /private/i
 ];
 
 module.exports = Router;
