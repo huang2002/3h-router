@@ -1,6 +1,6 @@
 {
     "name": "3h-router",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "A simple router.",
     "repository": {
         "type": "GitHub",
@@ -12,8 +12,9 @@
         "build": "tsc"
     },
     "keywords": [
-        "route",
         "router",
+        "route",
+        "server",
         "3h"
     ],
     "author": "3h",
