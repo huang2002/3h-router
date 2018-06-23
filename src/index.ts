@@ -153,7 +153,7 @@ class Router extends EventEmitter implements RouterOptions {
                 { request: { headers } } = this as { request: IncomingMessage },
                 acceptEncoding = headers['accept-encoding'] || [];
             if (result.url) {
-                const ext = path.extname(result.url);
+                const ext = path.extname(result.url).slice(1);
                 if (contentTypes.has(ext)) {
                     response.setHeader('Content-Type', contentTypes.get(ext) as string);
                 }

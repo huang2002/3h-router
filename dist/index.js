@@ -116,7 +116,7 @@ class Router extends EventEmitter {
         if (code === 200) {
             const { contentTypes } = this, { request: { headers } } = this, acceptEncoding = headers['accept-encoding'] || [];
             if (result.url) {
-                const ext = path.extname(result.url);
+                const ext = path.extname(result.url).slice(1);
                 if (contentTypes.has(ext)) {
                     response.setHeader('Content-Type', contentTypes.get(ext));
                 }
