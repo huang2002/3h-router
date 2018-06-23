@@ -1,20 +1,24 @@
 {
-  "name": "3h-router",
-  "version": "1.8.1",
-  "description": "A simple router.",
-  "repository": {
-    "type": "GitHub",
-    "url": "https://github.com/huang2002/3h-router"
-  },
-  "main": "3h-router.js",
-  "scripts": {
-    "test": "echo # Please run test.js and visit http://localhost:88/ to test it. # && exit 0"
-  },
-  "keywords": [
-    "route",
-    "router",
-    "3h"
-  ],
-  "author": "3h",
-  "license": "MIT"
+    "name": "3h-router",
+    "version": "2.0.0",
+    "description": "A simple router.",
+    "repository": {
+        "type": "GitHub",
+        "url": "https://github.com/huang2002/3h-router"
+    },
+    "main": "./dist/index.js",
+    "scripts": {
+        "test": "node test/index.js",
+        "build": "tsc"
+    },
+    "keywords": [
+        "route",
+        "router",
+        "3h"
+    ],
+    "author": "3h",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^10.3.3"
+    }
 }
