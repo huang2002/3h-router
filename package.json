@@ -1,12 +1,13 @@
 {
     "name": "3h-router",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "A simple router.",
     "repository": {
         "type": "GitHub",
         "url": "https://github.com/huang2002/3h-router"
     },
     "main": "./dist/index.js",
+    "types": "./typings/index.d.ts",
     "scripts": {
         "test": "node test/index.js",
         "build": "tsc"
