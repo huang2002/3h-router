@@ -32,6 +32,8 @@ declare class Router extends EventEmitter implements RouterOptions {
         contentTypes: Map<string, string>;
         subRouters: string[];
     };
+    static readonly SUB_ROUTER_CODE: number;
+    static readonly REDIRECT_DIR_CODE: number;
     basePath: string;
     gzipEnabled: boolean;
     deflateEnabled: boolean;

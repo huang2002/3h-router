@@ -63,7 +63,12 @@ class Router extends EventEmitter {
                     return new Result({ code: 200, url });
                 }
                 else {
-                    return this.resolveDefaultPage(url);
+                    if (/(?:\\|\/)$/.test(url)) {
+                        return this.resolveDefaultPage(url);
+                    }
+                    else {
+                        return new Result({ code: Router.REDIRECT_DIR_CODE });
+                    }
                 }
             }
             else {
@@ -87,7 +92,7 @@ class Router extends EventEmitter {
             try {
                 const subRouter = require(path.resolve(subRouterUrl));
                 subRouter(this);
-                return new Result({ code: 0 });
+                return new Result({ code: Router.SUB_ROUTER_CODE });
             }
             catch (err) {
                 this.emit('error', err);
@@ -99,8 +104,8 @@ class Router extends EventEmitter {
         }
     }
     resolve(url) {
-        const staticResult = this.resolveStatic(url);
-        if (staticResult.code !== 200 && fs.existsSync(url) && !isFile(url)) {
+        const staticResult = this.resolveStatic(url), { code } = staticResult;
+        if (code === 404 && fs.existsSync(url) && !isFile(url)) {
             return this.resolveSubRouter(url);
         }
         else {
@@ -133,8 +138,15 @@ class Router extends EventEmitter {
                 result.pipe(response);
             }
         }
-        else if (code > 0) {
-            response.statusCode = code;
+        else if (code !== Router.SUB_ROUTER_CODE) {
+            if (code === Router.REDIRECT_DIR_CODE) {
+                response.writeHead(301, {
+                    Location: url + '/'
+                });
+            }
+            else {
+                response.statusCode = code;
+            }
             response.end();
         }
     }
@@ -165,4 +177,6 @@ class Router extends EventEmitter {
     }
 }
 Router.defaultOptions = defaultOptions;
+Router.SUB_ROUTER_CODE = -1;
+Router.REDIRECT_DIR_CODE = -2;
 module.exports = Router;
